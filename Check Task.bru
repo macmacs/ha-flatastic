@@ -1,0 +1,15 @@
+meta {
+  name: Check Task
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://api.flatastic-app.com/index.php/api/chores/next?id=4705478
+  body: none
+  auth: inherit
+}
+
+params:query {
+  id: 4705478
+}

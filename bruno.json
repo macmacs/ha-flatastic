@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Flatastic",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
