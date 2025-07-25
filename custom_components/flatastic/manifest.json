@@ -1,0 +1,13 @@
+{
+  "domain": "flatastic",
+  "name": "Flatastic",
+  "codeowners": ["@thegroove"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://codeberg.org/thegroove/ha-flatastic",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://codeberg.org/thegroove/ha-flatastic/issues",
+  "requirements": ["aiohttp>=3.8.0"],
+  "version": "1.0.0"
+}

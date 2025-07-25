@@ -1,0 +1,25 @@
+complete_chore:
+  name: Complete Chore
+  description: Mark a chore as completed by a specific user
+  fields:
+    chore_id:
+      name: Chore ID
+      description: The ID of the chore to complete
+      required: true
+      selector:
+        number:
+          min: 1
+          mode: box
+    completed_by:
+      name: Completed By User ID
+      description: The user ID who completed the chore
+      required: true
+      selector:
+        number:
+          min: 1
+          mode: box
+
+cleanup_orphaned_entities:
+  name: Cleanup Orphaned Entities
+  description: Remove sensor entities for chores that no longer exist in Flatastic
+  fields: {}

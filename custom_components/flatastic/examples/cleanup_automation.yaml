@@ -1,0 +1,33 @@
+# Example automation to regularly clean up orphaned Flatastic entities
+# Add this to your Home Assistant automations.yaml or create it via the UI
+
+- id: flatastic_cleanup_orphaned_entities
+  alias: "Flatastic: Cleanup Orphaned Entities"
+  description: "Regularly clean up sensor entities for chores that no longer exist in Flatastic"
+  trigger:
+    # Run daily at 3 AM
+    - platform: time
+      at: "03:00:00"
+    # Also run when Home Assistant starts (after 5 minutes to let everything initialize)
+    - platform: homeassistant
+      event: start
+      for:
+        minutes: 5
+  condition: []
+  action:
+    - service: flatastic.cleanup_orphaned_entities
+      data: {}
+  mode: single
+
+# Alternative: Run cleanup every 6 hours
+# - id: flatastic_cleanup_orphaned_entities_frequent
+#   alias: "Flatastic: Cleanup Orphaned Entities (Frequent)"
+#   description: "Clean up orphaned Flatastic entities every 6 hours"
+#   trigger:
+#     - platform: time_pattern
+#       hours: "/6"  # Every 6 hours
+#   condition: []
+#   action:
+#     - service: flatastic.cleanup_orphaned_entities
+#       data: {}
+#   mode: single

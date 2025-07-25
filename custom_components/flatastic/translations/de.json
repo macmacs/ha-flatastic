@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Flatastic",
+        "description": "Richten Sie Ihre Flatastic-Integration ein, um Hausarbeiten zu überwachen",
+        "data": {
+          "api_key": "API-Schlüssel"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zur Flatastic-API fehlgeschlagen",
+      "invalid_auth": "Ungültiger API-Schlüssel",
+      "unknown": "Unerwarteter Fehler aufgetreten"
+    },
+    "abort": {
+      "already_configured": "Flatastic ist bereits konfiguriert"
+    }
+  }
+}

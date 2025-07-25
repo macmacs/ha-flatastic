@@ -1,0 +1,130 @@
+# Example Lovelace dashboard configuration for Flatastic integration
+# Copy this to your dashboard or use as inspiration
+
+title: Flatastic Chores Dashboard
+views:
+  - title: Overview
+    path: overview
+    icon: mdi:home-assistant
+    cards:
+      # Custom card showing overdue chores with completion buttons
+      - type: custom:flatastic-chores-card
+        
+      # Auto-entities card showing all chores by status
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: All Chores by Status
+        filter:
+          include:
+            - attributes:
+                integration: flatastic
+          exclude: []
+        sort:
+          method: attribute
+          attribute: status
+          reverse: false
+
+  - title: Overdue Tasks
+    path: overdue
+    icon: mdi:alert-circle
+    cards:
+      # Show only overdue chores
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: 🚨 Overdue Chores
+          state_color: true
+        filter:
+          include:
+            - attributes:
+                integration: flatastic
+                status: overdue
+          exclude: []
+        sort:
+          method: attribute
+          attribute: timeLeftNext
+          numeric: true
+
+      # High priority overdue chores
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: ⚠️ High Priority (1+ week overdue)
+          state_color: true
+        filter:
+          include:
+            - attributes:
+                integration: flatastic
+                urgency: high
+          exclude: []
+
+  - title: Due Soon
+    path: due-soon
+    icon: mdi:clock-alert
+    cards:
+      # Tasks due within 24 hours
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: ⏰ Due Soon (within 24h)
+          state_color: true
+        filter:
+          include:
+            - attributes:
+                integration: flatastic
+                status: due_soon
+          exclude: []
+        sort:
+          method: attribute
+          attribute: timeLeftNext
+          numeric: true
+
+  - title: All Tasks
+    path: all-tasks
+    icon: mdi:format-list-checks
+    cards:
+      # All chores grouped by user
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: All Chores
+          state_color: true
+        filter:
+          include:
+            - attributes:
+                integration: flatastic
+          exclude: []
+        sort:
+          method: attribute
+          attribute: currentUser
+          numeric: true
+
+      # Statistics card (if you want to create template sensors)
+      - type: entities
+        title: Chore Statistics
+        entities:
+          # You can create template sensors for these statistics
+          - entity: sensor.flatastic_total_chores
+            name: Total Chores
+          - entity: sensor.flatastic_overdue_count
+            name: Overdue Count
+          - entity: sensor.flatastic_due_soon_count
+            name: Due Soon Count
+
+# Example template sensors you can add to configuration.yaml
+# template:
+#   - sensor:
+#       - name: "Flatastic Total Chores"
+#         state: >
+#           {{ states | selectattr('entity_id', 'match', 'sensor.flatastic_.*') | list | count }}
+#         
+#       - name: "Flatastic Overdue Count"
+#         state: >
+#           {{ states | selectattr('entity_id', 'match', 'sensor.flatastic_.*') 
+#              | selectattr('attributes.status', 'eq', 'overdue') | list | count }}
+#         
+#       - name: "Flatastic Due Soon Count"
+#         state: >
+#           {{ states | selectattr('entity_id', 'match', 'sensor.flatastic_.*') 
+#              | selectattr('attributes.status', 'eq', 'due_soon') | list | count }}
