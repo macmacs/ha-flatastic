@@ -34,13 +34,18 @@ jobs:
         run: |
           DATE=$(date +"%Y-%m-%d")
           VERSION="${{ github.event.inputs.version }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            COMMITS=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s" --no-merges)
+          else
+            COMMITS=$(git log --pretty=format:"- %s" --no-merges)
+          fi
           temp_file=$(mktemp)
           head -n 6 CHANGELOG.md > "$temp_file"
           echo "" >> "$temp_file"
           echo "## [$VERSION] - $DATE" >> "$temp_file"
           echo "" >> "$temp_file"
-          echo "### Changed" >> "$temp_file"
-          echo "- Release $VERSION" >> "$temp_file"
+          echo "$COMMITS" >> "$temp_file"
           echo "" >> "$temp_file"
           tail -n +7 CHANGELOG.md >> "$temp_file"
           mv "$temp_file" CHANGELOG.md
