@@ -2,18 +2,18 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 
-A Home Assistant integration for monitoring Flatastic chores.
+A Home Assistant custom integration for the [Flatastic](https://www.flatastic-app.com/) chore management app. It creates sensors for each chore, provides services to complete chores, and includes a custom Lovelace card for interactive management.
 
 ## Features
 
-- 🏠 Fetches chore data from the Flatastic API
-- 📊 Creates individual sensors for each chore
-- 🔄 Automatic updates every 15 minutes
-- 📋 Each sensor shows the current assigned user name as its state value
-- 📝 All chore attributes available as sensor attributes
-- 🎯 Filterable attributes for use with Auto Entities card
-- 🚨 Custom Lovelace card for interactive chore management
-- 🔧 Services for completing chores and cleaning up orphaned entities
+- Fetches chore data from the Flatastic API
+- Creates individual sensors for each chore
+- Automatic updates every 15 minutes
+- Each sensor shows the current assigned user name as its state value
+- All chore attributes available as sensor attributes
+- Filterable attributes for use with Auto Entities card
+- Custom Lovelace card for interactive chore management
+- Services for completing chores and cleaning up orphaned entities
 
 ## Installation
 
@@ -36,41 +36,48 @@ A Home Assistant integration for monitoring Flatastic chores.
 
 ## Configuration
 
-1. Go to Configuration > Integrations in Home Assistant
+1. Go to **Settings > Devices & Services** in Home Assistant
 2. Click "Add Integration"
 3. Search for "Flatastic"
 4. Enter your Flatastic API key
 5. Click "Submit"
 
-## API Key
+### API Key
 
-You'll need a Flatastic API key to use this integration. The API key should be obtained from your Flatastic account or by contacting Flatastic support.
+You need a Flatastic API key to use this integration. The API key can be obtained from your Flatastic account or by contacting Flatastic support.
 
 ## Sensors
 
-The integration creates one sensor for each chore returned by the Flatastic API. Each sensor:
+The integration creates one sensor per chore. Each sensor:
 
 - Has a unique ID based on the chore ID
 - Shows the current assigned user name as its state value
 - Contains all chore data as attributes (title, id, details, users, points, rotationTime, currentUser, lastDoneDate, creationDate, fixed, timeLeftNext)
-- Includes additional filterable attributes for use with Auto Entities card
+- Includes filterable attributes for use with Auto Entities card
+- Is automatically added/removed when chores change in Flatastic
 
 ### Filterable Attributes
 
-The integration adds several attributes specifically designed for filtering with the Auto Entities card:
+The integration adds several attributes designed for filtering with the Auto Entities card:
 
-- **`integration`**: Always set to "flatastic" for easy filtering
-- **`chore_type`**: Always set to "household" for categorization
-- **`status`**: Dynamic status based on due date
-  - `overdue`: Task is past due (timeLeftNext < 0)
-  - `due_soon`: Task is due within 24 hours (0 ≤ timeLeftNext < 86400)
-  - `pending`: Task is not due yet (timeLeftNext ≥ 86400)
-- **`urgency`**: Priority level for task completion
-  - `high`: More than 1 week overdue
-  - `medium`: Overdue but less than 1 week
-  - `low`: Not overdue
+| Attribute    | Values                                      | Description                          |
+|-------------|----------------------------------------------|--------------------------------------|
+| `integration` | `flatastic`                                | Always set, for easy filtering       |
+| `chore_type`  | `household`                                | Always set, for categorization       |
+| `status`      | `overdue`, `due_soon`, `pending`           | Based on `timeLeftNext`              |
+| `urgency`     | `high`, `medium`, `low`                    | Based on how far overdue             |
 
-### Example Auto Entities Configuration
+Status thresholds:
+- `overdue`: `timeLeftNext < 0`
+- `due_soon`: `0 <= timeLeftNext < 86400` (within 24 hours)
+- `pending`: `timeLeftNext >= 86400`
+
+Urgency thresholds:
+- `high`: more than 1 week overdue
+- `medium`: overdue but less than 1 week
+- `low`: not overdue
+
+### Auto Entities Example
 
 ```yaml
 type: custom:auto-entities
@@ -82,7 +89,6 @@ filter:
     - attributes:
         integration: flatastic
         status: overdue
-  exclude: []
 sort:
   method: attribute
   attribute: timeLeftNext
@@ -90,17 +96,15 @@ sort:
 
 ## Services
 
-The integration provides services for chore management:
-
 ### `flatastic.complete_chore`
 
 Marks a chore as completed by a specific user.
 
-**Parameters:**
-- `chore_id` (required): The ID of the chore to complete
-- `completed_by` (required): The user ID who completed the chore
+| Parameter     | Type | Required | Description                        |
+|--------------|------|----------|------------------------------------|
+| `chore_id`    | int  | yes      | The ID of the chore to complete    |
+| `completed_by`| int  | yes      | The user ID who completed the chore|
 
-**Example:**
 ```yaml
 service: flatastic.complete_chore
 data:
@@ -110,71 +114,92 @@ data:
 
 ### `flatastic.cleanup_orphaned_entities`
 
-Remove sensor entities for chores that no longer exist in Flatastic. This service helps clean up "unavailable" sensors that remain after chores are deleted from the Flatastic app.
+Removes sensor entities for chores that no longer exist in Flatastic. Useful for cleaning up "unavailable" sensors that remain after chores are deleted.
 
-**Parameters:** None
+No parameters required.
 
 ## Custom Card
 
-The integration includes a custom Lovelace card that displays overdue chores with buttons to complete them.
-
-### Installation
-
-The custom card is automatically available after installing the integration. Add it to your dashboard:
+The integration includes a custom Lovelace card that displays overdue chores with completion buttons. It is automatically available after installation.
 
 ```yaml
 type: custom:flatastic-chores-card
 ```
 
-### Features
+Features:
+- Shows only overdue chores
+- Color-coded urgency levels (high: red, medium: orange)
+- Displays how long each chore is overdue
+- Completion buttons per user
+- Celebration message when no chores are overdue
 
-- 🚨 Shows only overdue chores automatically
-- 🎯 Color-coded urgency levels (high: red, medium: orange)
-- ⏰ Displays how long each chore is overdue
-- 👥 Shows completion buttons for each user assigned to the chore
-- 🔘 One-click completion with user names (no generic "Complete" button)
-- 🎉 Shows celebration message when no chores are overdue
-- 📱 Responsive design that works on mobile and desktop
-
-### Card Configuration
-
-The card works automatically without configuration, but you can customize it:
+Optional configuration:
 
 ```yaml
 type: custom:flatastic-chores-card
-title: "My Overdue Tasks"  # Optional custom title
+title: "My Overdue Tasks"
 ```
 
 ## Entity Cleanup
 
-When chores are deleted from Flatastic, the integration automatically removes the corresponding sensor entities. However, in some cases, orphaned entities may remain as "unavailable" with `restored: true`. 
+When chores are deleted from Flatastic, the integration automatically removes the corresponding sensors. If orphaned entities remain:
 
-To address this issue:
-
-1. **Automatic Cleanup**: The integration includes enhanced logic to force-remove entities when chores are deleted
-2. **Manual Cleanup**: Use the `flatastic.cleanup_orphaned_entities` service to manually clean up any remaining orphaned entities
-3. **Automated Cleanup**: Set up an automation to regularly run the cleanup service (see examples folder)
-
-### Example Automation
+1. **Manual**: Call the `flatastic.cleanup_orphaned_entities` service
+2. **Automated**: Set up a daily automation (see `custom_components/flatastic/examples/cleanup_automation.yaml`)
 
 ```yaml
 - id: flatastic_cleanup_orphaned_entities
   alias: "Flatastic: Cleanup Orphaned Entities"
-  description: "Regularly clean up sensor entities for chores that no longer exist in Flatastic"
   trigger:
     - platform: time
-      at: "03:00:00"  # Daily at 3 AM
+      at: "03:00:00"
   action:
     - service: flatastic.cleanup_orphaned_entities
       data: {}
 ```
 
-See `custom_components/flatastic/examples/cleanup_automation.yaml` for more automation examples.
+## Development
+
+### Prerequisites
+
+- Python 3.12+
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
+
+### Running Tests
+
+```bash
+uv run --with pytest --with pytest-asyncio --with aiohttp pytest tests/ -v
+```
+
+### Linting
+
+```bash
+uv run --with ruff ruff check custom_components/flatastic/
+```
+
+### Project Structure
+
+```
+custom_components/flatastic/
+  __init__.py          # Integration entry point, service registration
+  config_flow.py       # UI-based configuration flow
+  coordinator.py       # Data update coordinator (API communication)
+  sensor.py            # Sensor platform (entity management)
+  cleanup_service.py   # Orphaned entity cleanup service
+  const.py             # Constants and API endpoints
+  manifest.json        # Integration metadata
+  services.yaml        # Service definitions
+  strings.json         # UI strings
+  translations/        # Translations (en, de)
+  www/                 # Custom Lovelace card
+  examples/            # Example automations and dashboards
+tests/                 # Test suite
+```
 
 ## Support
 
-For issues and feature requests, please use the [repository's issue tracker](https://codeberg.org/thegroove/ha-flatastic/issues).
+For issues and feature requests, use the [issue tracker](https://codeberg.org/thegroove/ha-flatastic/issues).
 
 ## License
 
-This project is licensed under the MIT License.
+MIT License

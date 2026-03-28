@@ -95,9 +95,9 @@ class FlatasticChoresCard extends HTMLElement {
         }
       </style>
       <div class="card">
-        <div class="header">🚨 Overdue Chores</div>
+        <div class="header">Overdue Chores</div>
         ${entities.length === 0 ? 
-          '<div class="no-chores">No overdue chores! 🎉</div>' :
+          '<div class="no-chores">No overdue chores!</div>' :
           entities.map(entityId => {
             const state = this._hass.states[entityId];
             const attributes = state.attributes;

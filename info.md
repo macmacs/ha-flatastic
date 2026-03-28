@@ -4,14 +4,14 @@ A Home Assistant integration for monitoring Flatastic chores.
 
 ## Features
 
-- 🏠 Fetches chore data from the Flatastic API
-- 📊 Creates individual sensors for each chore
-- 🔄 Automatic updates every 15 minutes
-- 📋 Each sensor shows the current assigned user name as its state value
-- 📝 All chore attributes available as sensor attributes
-- 🎯 Filterable attributes for use with Auto Entities card
-- 🚨 Custom Lovelace card for interactive chore management
-- 🔧 Services for completing chores and cleaning up orphaned entities
+- Fetches chore data from the Flatastic API
+- Creates individual sensors for each chore
+- Automatic updates every 15 minutes
+- Each sensor shows the current assigned user name as its state value
+- All chore attributes available as sensor attributes
+- Filterable attributes for use with Auto Entities card
+- Custom Lovelace card for interactive chore management
+- Services for completing chores and cleaning up orphaned entities
 
 ## Installation
 

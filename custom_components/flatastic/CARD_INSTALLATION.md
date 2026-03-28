@@ -77,14 +77,14 @@ If the completion buttons don't respond:
 
 ## Card Features
 
-- 🚨 Automatically shows only overdue chores
-- 🎯 Color-coded urgency levels (high: red, medium: orange)
-- ⏰ Displays how long each chore is overdue
-- 👥 Shows completion buttons for each user assigned to the chore
-- 🔘 One-click completion with user names (no generic "Complete" button)
-- 🎉 Shows celebration message when no chores are overdue
-- 📱 Responsive design for mobile and desktop
-- 🔄 Real-time updates when chores are completed
+- Automatically shows only overdue chores
+- Color-coded urgency levels (high: red, medium: orange)
+- Displays how long each chore is overdue
+- Shows completion buttons for each user assigned to the chore
+- One-click completion with user names (no generic "Complete" button)
+- Shows celebration message when no chores are overdue
+- Responsive design for mobile and desktop
+- Real-time updates when chores are completed
 
 ## Example Usage
 

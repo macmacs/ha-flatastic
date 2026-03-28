@@ -22,11 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation and installation instructions
 
 ### Features
-- 🏠 Fetches chore data from the Flatastic API
-- 📊 Creates individual sensors for each chore
-- 🔄 Automatic updates every 15 minutes
-- 📋 Shows current assigned user name as sensor state
-- 📝 All chore attributes available as sensor attributes
-- 🎯 Filterable attributes for dashboard automation
-- 🚨 Custom card with color-coded urgency levels
-- 🔧 Services for chore management and cleanup
+- Fetches chore data from the Flatastic API
+- Creates individual sensors for each chore
+- Automatic updates every 15 minutes
+- Shows current assigned user name as sensor state
+- All chore attributes available as sensor attributes
+- Filterable attributes for dashboard automation
+- Custom card with color-coded urgency levels
+- Services for chore management and cleanup

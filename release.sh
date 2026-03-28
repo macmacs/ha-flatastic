@@ -91,7 +91,7 @@ git tag -a "v$VERSION" -m "Release version $VERSION
 See CHANGELOG.md for details."
 
 echo ""
-echo "✅ Release $VERSION created successfully!"
+echo "Release $VERSION created successfully!"
 echo ""
 echo "Next steps:"
 echo "1. Review the changes: git show v$VERSION"

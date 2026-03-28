@@ -33,7 +33,7 @@ views:
       - type: custom:auto-entities
         card:
           type: entities
-          title: 🚨 Overdue Chores
+          title: Overdue Chores
           state_color: true
         filter:
           include:
@@ -50,7 +50,7 @@ views:
       - type: custom:auto-entities
         card:
           type: entities
-          title: ⚠️ High Priority (1+ week overdue)
+          title: High Priority (1+ week overdue)
           state_color: true
         filter:
           include:
@@ -67,7 +67,7 @@ views:
       - type: custom:auto-entities
         card:
           type: entities
-          title: ⏰ Due Soon (within 24h)
+          title: Due Soon (within 24h)
           state_color: true
         filter:
           include:
