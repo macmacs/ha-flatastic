@@ -6,7 +6,7 @@ This integration allows you to monitor your Flatastic chores in Home Assistant.
 
 - Fetches chore data from the Flatastic API
 - Creates individual sensors for each chore
-- Each sensor shows the chore title as its value
+- Each sensor shows the current assigned user name as its state value
 - All other chore attributes are available as sensor attributes
 - Automatic updates every 15 minutes
 
@@ -96,4 +96,4 @@ See `examples/cleanup_automation.yaml` for more automation examples.
 
 ## Support
 
-For issues and feature requests, please use the GitHub repository's issue tracker.
+For issues and feature requests, please use the [issue tracker](https://codeberg.org/thegroove/ha-flatastic/issues).
