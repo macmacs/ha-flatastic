@@ -7,14 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1] - 2026-03-28
 
-### Changed
-- Release 0.1.1
-
+- Fixed bug in card: use Math.trunc in formatOverdueTime to correctly show hours for sub-day overdue chores
+- Add ESLint and vitest for the custom card JS
+- Upgrade actions to Node.js 24 compatible versions
+- Increase readability of card's contents
 
 ## [0.1.0] - 2026-03-28
 
-### Changed
-- Release 0.1.0
+- Replace release.sh with GitHub Actions release workflow
+- Add test suite and GitHub Actions CI workflow
+- Rewrite README and fix documentation
+- Bump aiohttp requirement to >=3.11.0
+- Remove emojis from all files
+- Fix logging to use %-formatting instead of f-strings
 
 
 ## [0.0.1] - 2025-01-25
