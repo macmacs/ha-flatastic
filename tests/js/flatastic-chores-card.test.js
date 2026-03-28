@@ -67,18 +67,17 @@ describe('FlatasticChoresCard', () => {
       expect(card.formatOverdueTime(0)).toBe('0h')
     })
 
+    it('returns hours for values less than 1 day overdue', () => {
+      expect(card.formatOverdueTime(-3600)).toBe('1h')
+      expect(card.formatOverdueTime(-7200)).toBe('2h')
+      expect(card.formatOverdueTime(-43200)).toBe('12h')
+      expect(card.formatOverdueTime(-86399)).toBe('23h')
+    })
+
     it('returns days for values >= 1 day overdue', () => {
-      expect(card.formatOverdueTime(-90000)).toBe('2d')
+      expect(card.formatOverdueTime(-86400)).toBe('1d')
+      expect(card.formatOverdueTime(-90000)).toBe('1d')
       expect(card.formatOverdueTime(-172800)).toBe('2d')
-    })
-
-    it('returns 1d for values just over 1 day', () => {
-      expect(card.formatOverdueTime(-86401)).toBe('2d')
-    })
-
-    it('returns 1d even for small negative values due to Math.floor behavior', () => {
-      // Math.floor(-3600/86400) = Math.floor(-0.04) = -1, abs = 1
-      expect(card.formatOverdueTime(-3600)).toBe('1d')
     })
   })
 

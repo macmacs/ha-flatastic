@@ -140,9 +140,9 @@ class FlatasticChoresCard extends HTMLElement {
   }
 
   formatOverdueTime(timeLeftNext) {
-    const overdueDays = Math.abs(Math.floor(timeLeftNext / 86400));
+    const overdueDays = Math.abs(Math.trunc(timeLeftNext / 86400));
     if (overdueDays === 0) {
-      const overdueHours = Math.abs(Math.floor(timeLeftNext / 3600));
+      const overdueHours = Math.abs(Math.trunc(timeLeftNext / 3600));
       return `${overdueHours}h`;
     }
     return `${overdueDays}d`;
