@@ -1,7 +1,7 @@
 """Constants for the Flatastic integration."""
 
 DOMAIN = "flatastic"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 # API Configuration
 API_BASE_URL = "https://api.flatastic-app.com/index.php/api"
