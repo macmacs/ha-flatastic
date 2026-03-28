@@ -120,7 +120,7 @@ No parameters required.
 
 ## Custom Card
 
-The integration includes a custom Lovelace card that displays overdue chores with completion buttons. It is automatically available after installation.
+The integration includes a custom Lovelace card that displays overdue chores with completion buttons. The card is registered automatically when the integration loads — no manual resource configuration needed.
 
 ```yaml
 type: custom:flatastic-chores-card

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 import voluptuous as vol
 from homeassistant.components.frontend import add_extra_js_url
@@ -70,8 +71,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Register cleanup service
     await async_setup_cleanup_service(hass)
 
-    # Register frontend resources
-    add_extra_js_url(hass, f"/hacsfiles/{DOMAIN}/flatastic-chores-card.js")
+    # Serve www/ directory and register the card as a frontend resource
+    www_dir = str(Path(__file__).parent / "www")
+    url_base = f"/{DOMAIN}/www"
+    try:
+        from homeassistant.components.http import StaticPathConfig
+        await hass.http.async_register_static_paths([StaticPathConfig(url_base, www_dir, True)])
+    except (ImportError, AttributeError):
+        hass.http.register_static_path(url_base, www_dir, cache_headers=True)
+    add_extra_js_url(hass, f"{url_base}/flatastic-chores-card.js")
 
     return True
 
