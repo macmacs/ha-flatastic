@@ -105,6 +105,9 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# Node
+node_modules/
+
 # IDE
 .vscode/
 .idea/

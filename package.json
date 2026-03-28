@@ -1,0 +1,15 @@
+{
+  "name": "ha-flatastic",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "lint": "eslint custom_components/flatastic/www/"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "jsdom": "^29.0.1",
+    "vitest": "^3.0.0"
+  }
+}

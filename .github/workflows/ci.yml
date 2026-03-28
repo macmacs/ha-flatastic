@@ -64,3 +64,21 @@ jobs:
           test -f custom_components/flatastic/strings.json
           test -d custom_components/flatastic/translations
           echo "Integration structure is valid"
+
+  js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
