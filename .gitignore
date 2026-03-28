@@ -126,8 +126,7 @@ Desktop.ini
 bruno/
 homeassistant/
 *.bru
-test_*.py
-tests/
+!tests/
 
 # API keys and sensitive data
 *.key

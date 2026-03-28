@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install ruff pytest pytest-asyncio aiohttp
+
+      - name: Lint with ruff
+        run: ruff check custom_components/flatastic/
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+      - name: Verify manifest.json
+        run: |
+          python -c "
+          import json, sys
+          with open('custom_components/flatastic/manifest.json') as f:
+              m = json.load(f)
+          required = ['domain', 'name', 'version', 'documentation', 'requirements', 'codeowners']
+          missing = [k for k in required if k not in m]
+          if missing:
+              print(f'Missing keys in manifest.json: {missing}')
+              sys.exit(1)
+          print('manifest.json is valid')
+          "
+
+      - name: Verify hacs.json
+        run: |
+          python -c "
+          import json, sys
+          with open('custom_components/flatastic/hacs.json') as f:
+              h = json.load(f)
+          required = ['name', 'homeassistant']
+          missing = [k for k in required if k not in h]
+          if missing:
+              print(f'Missing keys in hacs.json: {missing}')
+              sys.exit(1)
+          print('hacs.json is valid')
+          "
+
+      - name: Verify integration structure
+        run: |
+          test -f custom_components/flatastic/__init__.py
+          test -f custom_components/flatastic/manifest.json
+          test -f custom_components/flatastic/config_flow.py
+          test -f custom_components/flatastic/sensor.py
+          test -f custom_components/flatastic/const.py
+          test -f custom_components/flatastic/coordinator.py
+          test -f custom_components/flatastic/strings.json
+          test -d custom_components/flatastic/translations
+          echo "Integration structure is valid"
