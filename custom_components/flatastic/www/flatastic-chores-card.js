@@ -58,6 +58,11 @@ class FlatasticChoresCard extends HTMLElement {
           font-size: 0.9em;
           color: var(--secondary-text-color);
         }
+        .chore-details .value {
+          font-weight: bold;
+          font-size: 1.05em;
+          color: var(--primary-text-color);
+        }
         .urgency-high {
           border-left-color: var(--error-color);
         }
@@ -72,7 +77,8 @@ class FlatasticChoresCard extends HTMLElement {
           margin: 2px;
           border-radius: 4px;
           cursor: pointer;
-          font-size: 0.8em;
+          font-size: 0.9em;
+          line-height: 1.6;
         }
         .complete-btn:hover {
           background: var(--primary-color-dark);
@@ -118,8 +124,8 @@ class FlatasticChoresCard extends HTMLElement {
                 <div class="chore-info">
                   <div class="chore-title">${attributes.title}</div>
                   <div class="chore-details">
-                    Assigned to: ${state.state} | Points: ${attributes.points || 0} | 
-                    Overdue by: ${this.formatOverdueTime(attributes.timeLeftNext || 0)}
+                    Assigned to: <span class="value">${state.state}</span> | Points: <span class="value">${attributes.points || 0}</span> |
+                    Overdue by: <span class="value">${this.formatOverdueTime(attributes.timeLeftNext || 0)}</span>
                   </div>
                   <div class="buttons-container">
                     ${userButtons}
