@@ -2,20 +2,18 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 import voluptuous as vol
-
+from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.components.frontend import add_extra_js_url
 
+from .cleanup_service import async_setup_cleanup_service
 from .const import DOMAIN, SERVICE_COMPLETE_CHORE
 from .coordinator import FlatasticDataUpdateCoordinator
-from .cleanup_service import async_setup_cleanup_service
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,7 +31,7 @@ COMPLETE_CHORE_SCHEMA = vol.Schema(
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Flatastic from a config entry."""
     session = async_get_clientsession(hass)
-    
+
     coordinator = FlatasticDataUpdateCoordinator(
         hass,
         session,
@@ -51,16 +49,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Handle the complete chore service call."""
         chore_id = call.data["chore_id"]
         completed_by = call.data["completed_by"]
-        
+
         # Get the first coordinator (assuming single config entry for now)
         coordinators = list(hass.data[DOMAIN].values())
         if coordinators:
             coordinator = coordinators[0]
             success = await coordinator.complete_chore(chore_id, completed_by)
             if success:
-                _LOGGER.info(f"Successfully completed chore {chore_id} for user {completed_by}")
+                _LOGGER.info("Successfully completed chore %s for user %s", chore_id, completed_by)
             else:
-                _LOGGER.error(f"Failed to complete chore {chore_id} for user {completed_by}")
+                _LOGGER.error("Failed to complete chore %s for user %s", chore_id, completed_by)
 
     hass.services.async_register(
         DOMAIN,
@@ -82,7 +80,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
-        
+
         # Remove service if no more config entries
         if not hass.data[DOMAIN]:
             hass.services.async_remove(DOMAIN, SERVICE_COMPLETE_CHORE)

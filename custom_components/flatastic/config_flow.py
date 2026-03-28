@@ -6,14 +6,13 @@ from typing import Any
 
 import aiohttp
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import DOMAIN, API_CHORES_ENDPOINT, CONF_API_KEY
+from .const import API_CHORES_ENDPOINT, CONF_API_KEY, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,19 +29,19 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
     session = async_get_clientsession(hass)
-    
+
     headers = {"x-api-key": data[CONF_API_KEY]}
-    
+
     try:
         async with session.get(API_CHORES_ENDPOINT, headers=headers) as response:
             if response.status == 401:
                 raise InvalidAuth
             elif response.status != 200:
                 raise CannotConnect
-            
+
             # Try to parse the JSON response
             await response.json()
-            
+
     except aiohttp.ClientError as err:
         _LOGGER.error("Error connecting to Flatastic API: %s", err)
         raise CannotConnect from err

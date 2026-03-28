@@ -29,7 +29,7 @@ async def async_setup_entry(
     coordinator.existing_entities = {}
 
     entities = []
-    
+
     # Create a sensor for each chore item
     if coordinator.data:
         for idx, chore_data in enumerate(coordinator.data):
@@ -39,7 +39,7 @@ async def async_setup_entry(
             coordinator.existing_entities[chore_id] = entity
 
     async_add_entities(entities)
-    
+
     # Set up listener for data updates to manage entities dynamically
     async def _async_update_entities() -> None:
         """Update entities when coordinator data changes."""
@@ -49,32 +49,32 @@ async def async_setup_entry(
             for chore_id in entities_to_remove:
                 entity = coordinator.existing_entities.pop(chore_id)
                 await entity.async_remove(force_remove=True)
-                _LOGGER.info(f"Removed sensor for deleted chore {chore_id} (no data)")
+                _LOGGER.info("Removed sensor for deleted chore %s (no data)", chore_id)
             return
-        
+
         current_chore_ids = {chore_data.get("id") for chore_data in coordinator.data if chore_data.get("id")}
         existing_chore_ids = set(coordinator.existing_entities.keys())
-        
+
         # Remove entities for chores that no longer exist
         entities_to_remove = existing_chore_ids - current_chore_ids
         for chore_id in entities_to_remove:
             entity = coordinator.existing_entities.pop(chore_id)
             # Force remove the entity from Home Assistant registry
             await entity.async_remove(force_remove=True)
-            _LOGGER.info(f"Removed sensor for deleted chore {chore_id}")
-        
+            _LOGGER.info("Removed sensor for deleted chore %s", chore_id)
+
         # Add entities for new chores
         new_chore_ids = current_chore_ids - existing_chore_ids
         new_entities = []
-        
+
         for idx, chore_data in enumerate(coordinator.data):
             chore_id = chore_data.get("id")
             if chore_id in new_chore_ids:
                 entity = FlatasticChoreSensor(coordinator, idx, chore_data)
                 new_entities.append(entity)
                 coordinator.existing_entities[chore_id] = entity
-                _LOGGER.info(f"Added sensor for new chore {chore_id}: {chore_data.get('title', 'Unknown')}")
-        
+                _LOGGER.info("Added sensor for new chore %s: %s", chore_id, chore_data.get('title', 'Unknown'))
+
         if new_entities:
             coordinator.async_add_entities(new_entities)
 
@@ -94,10 +94,10 @@ class FlatasticChoreSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._chore_id = chore_data.get("id", idx)
         self._chore_data = chore_data
-        
+
         # Extract title for the sensor name and value
         self._title = chore_data.get("title", f"Chore {idx}")
-        
+
         # Create unique ID based on chore data
         self._attr_unique_id = f"flatastic_chore_{self._chore_id}"
         self._attr_name = f"Flatastic {self._title}"
@@ -106,7 +106,7 @@ class FlatasticChoreSensor(CoordinatorEntity, SensorEntity):
         """Get current chore data by ID."""
         if not self.coordinator.data:
             return None
-        
+
         for chore_data in self.coordinator.data:
             if chore_data.get("id") == self._chore_id:
                 return chore_data
@@ -133,14 +133,14 @@ class FlatasticChoreSensor(CoordinatorEntity, SensorEntity):
             for key, value in current_data.items():
                 if key != "title":
                     attributes[key] = value
-            
+
             # Add the chore title as an attribute since it's no longer the sensor value
             attributes["title"] = current_data.get("title", self._title)
-            
+
             # Add filterable attributes for Auto Entities card
             attributes["integration"] = "flatastic"
             attributes["chore_type"] = "household"
-            
+
             # Add status based on timeLeftNext for easy filtering
             time_left = current_data.get("timeLeftNext", 0)
             if time_left < 0:
@@ -149,7 +149,7 @@ class FlatasticChoreSensor(CoordinatorEntity, SensorEntity):
                 attributes["status"] = "due_soon"
             else:
                 attributes["status"] = "pending"
-            
+
             # Add user-friendly time status
             if time_left < -604800:  # More than 1 week overdue
                 attributes["urgency"] = "high"
@@ -157,7 +157,7 @@ class FlatasticChoreSensor(CoordinatorEntity, SensorEntity):
                 attributes["urgency"] = "medium"
             else:
                 attributes["urgency"] = "low"
-            
+
             # Add user names for the users assigned to this chore
             user_names = []
             users_list = current_data.get("users", [])
@@ -166,12 +166,14 @@ class FlatasticChoreSensor(CoordinatorEntity, SensorEntity):
                     user_name = self.coordinator.users_data.get(user_id, f"User {user_id}")
                     user_names.append({"id": user_id, "name": user_name})
             attributes["user_names"] = user_names
-            
+
             # Add current user name
             current_user_id = current_data.get("currentUser")
             if current_user_id:
-                attributes["current_user_name"] = self.coordinator.users_data.get(current_user_id, f"User {current_user_id}")
-                
+                attributes["current_user_name"] = self.coordinator.users_data.get(
+                    current_user_id, f"User {current_user_id}"
+                )
+
             return attributes
         return {}
 

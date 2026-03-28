@@ -6,7 +6,6 @@ from datetime import timedelta
 from typing import Any
 
 import aiohttp
-
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -55,10 +54,10 @@ class FlatasticDataUpdateCoordinator(DataUpdateCoordinator):
                                 users[user_id] = user["firstName"]
                     return users
                 else:
-                    _LOGGER.warning(f"Failed to fetch users data: {response.status}")
+                    _LOGGER.warning("Failed to fetch users data: %s", response.status)
                     return {}
         except Exception as err:
-            _LOGGER.warning(f"Error fetching users data: {err}")
+            _LOGGER.warning("Error fetching users data: %s", err)
             return {}
 
     async def _async_update_data(self) -> list[dict[str, Any]]:
@@ -66,7 +65,7 @@ class FlatasticDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             # Fetch users data first
             self.users_data = await self._fetch_users_data()
-            
+
             async with self.session.get(
                 API_CHORES_ENDPOINT, headers=self.headers
             ) as response:
@@ -74,15 +73,15 @@ class FlatasticDataUpdateCoordinator(DataUpdateCoordinator):
                     raise UpdateFailed("Invalid API key")
                 elif response.status != 200:
                     raise UpdateFailed(f"API returned status {response.status}")
-                
+
                 data = await response.json()
-                
+
                 # Ensure we return a list
                 if not isinstance(data, list):
                     raise UpdateFailed("API did not return a list")
-                
+
                 return data
-                
+
         except aiohttp.ClientError as err:
             raise UpdateFailed(f"Error communicating with API: {err}") from err
         except Exception as err:
@@ -95,9 +94,9 @@ class FlatasticDataUpdateCoordinator(DataUpdateCoordinator):
                 "id": chore_id,
                 "completedBy": completed_by
             }
-            
+
             async with self.session.get(
-                API_COMPLETE_CHORE_ENDPOINT, 
+                API_COMPLETE_CHORE_ENDPOINT,
                 headers=self.headers,
                 params=params
             ) as response:
@@ -105,16 +104,16 @@ class FlatasticDataUpdateCoordinator(DataUpdateCoordinator):
                     _LOGGER.error("Invalid API key when completing chore")
                     return False
                 elif response.status != 200:
-                    _LOGGER.error(f"API returned status {response.status} when completing chore")
+                    _LOGGER.error("API returned status %s when completing chore", response.status)
                     return False
-                
+
                 # Trigger a data refresh after completing a chore
                 await self.async_request_refresh()
                 return True
-                
+
         except aiohttp.ClientError as err:
-            _LOGGER.error(f"Error completing chore: {err}")
+            _LOGGER.error("Error completing chore: %s", err)
             return False
         except Exception as err:
-            _LOGGER.error(f"Unexpected error completing chore: {err}")
+            _LOGGER.error("Unexpected error completing chore: %s", err)
             return False
